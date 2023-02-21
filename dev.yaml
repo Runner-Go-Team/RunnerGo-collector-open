@@ -1,0 +1,34 @@
+http:
+  host: "0.0.0.0:20125"
+
+
+mongodb:
+  dsn: "mongodb://kunpeng:kYjJpU8BYvb4EJ9x@dds-8vb14448e6c8d6241844-pub.mongodb.zhangbei.rds.aliyuncs.com:3717/kunpeng?replicaSet=mgset-509843895"
+  database: "kunpeng"
+
+kafka:
+  host: "172.17.101.188:9092"
+  topic: "report"
+  key: "kafka:report:partition"
+  num: 10
+  totalKafkaPartition: "TotalKafkaPartition"
+  stressBelongPartition: "StressBelongPartition"
+
+grpc:
+  host: "kpcontroller.apipost.cn:443"
+
+reportRedis:
+  address: "172.17.101.191:6398"
+  password: "apipost"
+  db: 0
+
+redis:
+  address: "172.17.101.191:6398"
+  password: "apipost"
+  db: 0
+
+log:
+  path: "/data/logs/RunnerGo/RunnerGo-collector-info.log"
+
+management:
+  address: "https://kpmanage.apipost.cn/management/api/v1/plan/notify_stop_stress"
