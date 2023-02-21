@@ -3,12 +3,12 @@ http:
 
 
 mongodb:
-  dsn: "mongodb://kunpeng:kYjJpU8BYvb4EJ9x@dds-8vb14448e6c8d6241844-pub.mongodb.zhangbei.rds.aliyuncs.com:3717/kunpeng?replicaSet=mgset-509843895"
-  database: "kunpeng"
+  dsn: "mongodb://runnergo_open:czYNsm6LmfZ0XU3E@172.17.101.255:27017/runnergo_open?replicaSet=mgset-509843895"
+  database: "runnergo_open"
 
 kafka:
   host: "172.17.101.188:9092"
-  topic: "report"
+  topic: "runnergo"
   key: "kafka:report:partition"
   num: 10
   totalKafkaPartition: "TotalKafkaPartition"
@@ -20,15 +20,15 @@ grpc:
 reportRedis:
   address: "172.17.101.191:6398"
   password: "apipost"
-  db: 0
+  db: 1
 
 redis:
   address: "172.17.101.191:6398"
   password: "apipost"
-  db: 0
+  db: 1
 
 log:
   path: "/data/logs/RunnerGo/RunnerGo-collector-info.log"
 
 management:
-  address: "https://kpmanage.apipost.cn/management/api/v1/plan/notify_stop_stress"
+  address: "https://manager.apipost.cc/management/api/v1/plan/notify_stop_stress"
