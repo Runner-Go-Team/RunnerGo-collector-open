@@ -7,10 +7,10 @@ import (
 	"RunnerGo-collector/internal/pkg/log"
 	"encoding/json"
 	"fmt"
+	"github.com/go-redis/redis"
 	"strconv"
 	"time"
 )
-import "github.com/go-redis/redis"
 
 var (
 	ReportRdb    *redis.Client
