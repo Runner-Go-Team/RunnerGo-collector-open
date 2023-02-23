@@ -31,4 +31,4 @@ log:
   path: "/data/logs/RunnerGo/RunnerGo-collector-info.log"
 
 management:
-  address: "https://manager.apipost.cc/management/api/v1/plan/notify_stop_stress"
+  address: "https://manager.runnergo.cc/management/api/v1/plan/notify_stop_stress"
