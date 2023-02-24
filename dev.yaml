@@ -1,11 +1,6 @@
 http:
   host: "0.0.0.0:20125"
 
-
-mongodb:
-  dsn: "mongodb://runnergo_open:czYNsm6LmfZ0XU3E@172.17.101.255:27017/runnergo_open?replicaSet=mgset-509843895"
-  database: "runnergo_open"
-
 kafka:
   host: "172.17.101.188:9092"
   topic: "runnergo"
@@ -13,9 +8,6 @@ kafka:
   num: 10
   totalKafkaPartition: "TotalKafkaPartition"
   stressBelongPartition: "StressBelongPartition"
-
-grpc:
-  host: "kpcontroller.apipost.cn:443"
 
 reportRedis:
   address: "172.17.101.191:6398"

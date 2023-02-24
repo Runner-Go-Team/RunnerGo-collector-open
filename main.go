@@ -5,6 +5,7 @@ import (
 	"RunnerGo-collector/internal/pkg/conf"
 	log2 "RunnerGo-collector/internal/pkg/log"
 	"RunnerGo-collector/internal/pkg/server"
+	"flag"
 	"net/http"
 	"os"
 	"os/signal"
@@ -12,10 +13,15 @@ import (
 	"syscall"
 )
 
+var mode int
+
 func main() {
 
+	flag.IntVar(&mode, "mode", 0, "读取环境变量还是读取配置文件")
+	flag.Parsed()
+	internal.InitProjects(mode)
+
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	internal.InitProjects()
 
 	collectorService := &http.Server{
 		Addr: conf.Conf.Http.Host,

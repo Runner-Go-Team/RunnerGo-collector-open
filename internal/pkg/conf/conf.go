@@ -4,13 +4,14 @@ import (
 	"flag"
 	"fmt"
 	"github.com/spf13/viper"
+	"os"
+	"strconv"
 )
 
 var Conf Config
 
 type Config struct {
 	Http        Http        `yaml:"http"`
-	GRPC        GRPC        `yaml:"grpc"`
 	Kafka       Kafka       `yaml:"kafka"`
 	ReportRedis ReportRedis `yaml:"reportRedis"`
 	Redis       Redis       `yaml:"redis"`
@@ -28,10 +29,6 @@ type Http struct {
 
 type Management struct {
 	Address string `yaml:"address"`
-}
-type GRPC struct {
-	Port int    `yaml:"port"`
-	Host string `yaml:"host"`
 }
 
 type Kafka struct {
@@ -55,7 +52,12 @@ type Redis struct {
 	DB       int64  `yaml:"DB"`
 }
 
-func MustInitConf() {
+func MustInitConf(mode int) {
+	if mode != 0 {
+		EnvInitConfig()
+		fmt.Println("config initialized")
+		return
+	}
 	var configFile string
 	flag.StringVar(&configFile, "c", "./dev.yaml", "app config file.")
 	if !flag.Parsed() {
@@ -75,4 +77,53 @@ func MustInitConf() {
 	}
 
 	fmt.Println("config initialized")
+}
+
+// EnvInitConfig 读取环境变量
+func EnvInitConfig() {
+	initLog()
+	initManagement()
+	initRedis()
+	initKafka()
+	initHttp()
+}
+
+func initLog() {
+	Conf.Log.Path = os.Getenv("RUNNER_GO_COLLECTOR_LOGg_PATH")
+}
+func initManagement() {
+	Conf.Management.Address = os.Getenv("RUNNER_GO_MANAGEMENT_ADDRESS")
+}
+
+func initRedis() {
+	var runnerGoRedis Redis
+	runnerGoRedis.Address = os.Getenv("RUNNER_GO_REDIS")
+	runnerGoRedis.Password = os.Getenv("RUNNER_GO_REDIS_PASSWORD")
+	db, err := strconv.ParseInt(os.Getenv("RUNNER_GO_REDIS_DB"), 10, 64)
+	if err != nil {
+		db = 0
+	}
+	runnerGoRedis.DB = db
+	Conf.Redis = runnerGoRedis
+}
+
+func initKafka() {
+	var runnerGoKafka Kafka
+	runnerGoKafka.Key = os.Getenv("RUNNER_GO_KAFKA_KEY")
+	num, err := strconv.Atoi(os.Getenv("RUNNER_GO_KAFKA_NUM"))
+	if err != nil {
+		num = 10
+	}
+	runnerGoKafka.Num = num
+	runnerGoKafka.TotalKafkaPartition = os.Getenv("RUNNER_GO_KAFKA_TOTAL_PARTITION")
+	runnerGoKafka.StressBelongPartition = os.Getenv("RUNNER_GO_KAFKA_STRESS_BELONG_PARTITION")
+
+	runnerGoKafka.Topic = os.Getenv("RUNNER_GO_KAFKA_TOPIC")
+	runnerGoKafka.Host = os.Getenv("RUNNER_GO_KAFKA_ADDRESS")
+	Conf.Kafka = runnerGoKafka
+
+}
+
+func initHttp() {
+	Conf.Http.Host = os.Getenv("RUNNER_GO_COLLECTOR_HTTP_HOST")
 }
