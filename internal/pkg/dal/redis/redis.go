@@ -1,12 +1,12 @@
 package redis
 
 import (
-	"RunnerGo-collector/internal/pkg"
-	"RunnerGo-collector/internal/pkg/conf"
-	"RunnerGo-collector/internal/pkg/dal/kao"
-	"RunnerGo-collector/internal/pkg/log"
 	"encoding/json"
 	"fmt"
+	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg"
+	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/conf"
+	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/dal/kao"
+	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/log"
 	"github.com/go-redis/redis"
 	"strconv"
 	"time"

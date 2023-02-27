@@ -1,14 +1,14 @@
 package pkg
 
 import (
-	services "RunnerGo-collector/api"
-	"RunnerGo-collector/internal/pkg/conf"
-	log2 "RunnerGo-collector/internal/pkg/log"
 	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/json"
 	"fmt"
+	services "github.com/Runner-Go-Team/RunnerGo-collector-open/api"
+	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/conf"
+	log2 "github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/log"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"

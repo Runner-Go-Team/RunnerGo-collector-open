@@ -1,8 +1,8 @@
 package kao
 
 import (
-	"RunnerGo-collector/internal/pkg/log"
 	"encoding/json"
+	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/log"
 )
 
 // ResultDataMsg 请求结果数据结构

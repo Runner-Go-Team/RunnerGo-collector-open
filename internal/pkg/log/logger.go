@@ -1,7 +1,7 @@
 package log
 
 import (
-	"RunnerGo-collector/internal/pkg/conf"
+	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/conf"
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"

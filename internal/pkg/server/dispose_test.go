@@ -2,8 +2,8 @@ package server
 
 import (
 	"fmt"
+	log2 "github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/log"
 	"github.com/Shopify/sarama"
-	log2 "kp-collector/internal/pkg/log"
 	"testing"
 )
 
