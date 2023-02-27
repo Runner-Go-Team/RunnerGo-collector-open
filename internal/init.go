@@ -7,8 +7,8 @@ import (
 	log "RunnerGo-collector/internal/pkg/log"
 )
 
-func InitProjects(mode int) {
-	conf.MustInitConf(mode)
+func InitProjects(mode int, configFile string) {
+	conf.MustInitConf(mode, configFile)
 	log.InitLogger()
 	pkg.InitLocalIp()
 	//es.InitEsClient(conf.Conf.ES.Host, conf.Conf.ES.Username, conf.Conf.ES.Password)

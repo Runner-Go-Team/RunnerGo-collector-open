@@ -14,12 +14,16 @@ import (
 )
 
 var mode int
+var configFile string
 
 func main() {
 
 	flag.IntVar(&mode, "m", 0, "读取环境变量还是读取配置文件")
-	flag.Parse()
-	internal.InitProjects(mode)
+	flag.StringVar(&configFile, "c", "./dev.yaml", "配置文件")
+	if !flag.Parsed() {
+		flag.Parse()
+	}
+	internal.InitProjects(mode, configFile)
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 

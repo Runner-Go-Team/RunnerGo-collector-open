@@ -1,7 +1,6 @@
 package conf
 
 import (
-	"flag"
 	"fmt"
 	"github.com/spf13/viper"
 	"os"
@@ -52,16 +51,11 @@ type Redis struct {
 	DB       int64  `yaml:"DB"`
 }
 
-func MustInitConf(mode int) {
+func MustInitConf(mode int, configFile string) {
 	if mode != 0 {
 		EnvInitConfig()
-		fmt.Println("config initialized")
+		fmt.Println("读取环境变量")
 		return
-	}
-	var configFile string
-	flag.StringVar(&configFile, "c", "./dev.yaml", "app config file.")
-	if !flag.Parsed() {
-		flag.Parse()
 	}
 
 	viper.SetConfigFile(configFile)
