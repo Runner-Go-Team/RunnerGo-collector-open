@@ -61,7 +61,7 @@ func deleteStopKey(key string) {
 
 func InsertTestData(machineMap map[string]map[string]int64, sceneTestResultDataMsg *kao.SceneTestResultDataMsg, runTime int64) (err error) {
 	data := sceneTestResultDataMsg.ToJson()
-	key := fmt.Sprintf("reportData:%s:%s:%s", sceneTestResultDataMsg.TeamId, sceneTestResultDataMsg.PlanId, sceneTestResultDataMsg.ReportId)
+	key := fmt.Sprintf("reportData:%s", sceneTestResultDataMsg.ReportId)
 	if sceneTestResultDataMsg.End {
 		if err != nil {
 			log.Logger.Error("报告Id转数字失败：  ", err)
