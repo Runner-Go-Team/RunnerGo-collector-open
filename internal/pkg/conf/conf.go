@@ -100,14 +100,14 @@ const (
 )
 
 func initLog() {
-	path := os.Getenv("RUNNER_GO_COLLECTOR_LOGg_PATH")
+	path := os.Getenv("RG_COLLECTOR_LOGg_PATH")
 	if path == "" {
 		path = LogPath
 	}
 	Conf.Log.Path = path
 }
 func initManagement() {
-	address := os.Getenv("RUNNER_GO_MANAGEMENT_NOTIFY_STOP_STRESS")
+	address := os.Getenv("RG_MANAGEMENT_NOTIFY_STOP_STRESS")
 	if address == "" {
 		address = ManagementNotifyStopStress
 	}
@@ -116,13 +116,13 @@ func initManagement() {
 
 func initRedis() {
 	var runnerGoRedis Redis
-	address := os.Getenv("RUNNER_GO_REDIS_ADDRESS")
+	address := os.Getenv("RG_REDIS_ADDRESS")
 	if address == "" {
 		address = RedisAddress
 	}
 	runnerGoRedis.Address = address
-	runnerGoRedis.Password = os.Getenv("RUNNER_GO_REDIS_PASSWORD")
-	db, err := strconv.ParseInt(os.Getenv("RUNNER_GO_REDIS_DB"), 10, 64)
+	runnerGoRedis.Password = os.Getenv("RG_REDIS_PASSWORD")
+	db, err := strconv.ParseInt(os.Getenv("RG_REDIS_DB"), 10, 64)
 	if err != nil {
 		db = 0
 	}
@@ -132,33 +132,33 @@ func initRedis() {
 
 func initKafka() {
 	var runnerGoKafka Kafka
-	key := os.Getenv("RUNNER_GO_KAFKA_KEY")
+	key := os.Getenv("RG_KAFKA_KEY")
 	if key == "" {
 		key = KafkaKey
 	}
 	runnerGoKafka.Key = key
-	num, err := strconv.Atoi(os.Getenv("RUNNER_GO_KAFKA_NUM"))
+	num, err := strconv.Atoi(os.Getenv("RG_KAFKA_NUM"))
 	if err != nil {
 		num = 10
 	}
 	runnerGoKafka.Num = num
-	totalKafkaPartition := os.Getenv("RUNNER_GO_KAFKA_TOTAL_PARTITION")
+	totalKafkaPartition := os.Getenv("RG_KAFKA_TOTAL_PARTITION")
 	if totalKafkaPartition == "" {
 		totalKafkaPartition = TotalKafkaPartition
 	}
 	runnerGoKafka.TotalKafkaPartition = totalKafkaPartition
-	stressBelongPartition := os.Getenv("RUNNER_GO_KAFKA_STRESS_BELONG_PARTITION")
+	stressBelongPartition := os.Getenv("RG_KAFKA_STRESS_BELONG_PARTITION")
 	if stressBelongPartition == "" {
 		stressBelongPartition = StressBelongPartition
 	}
-	runnerGoKafka.StressBelongPartition = os.Getenv("RUNNER_GO_KAFKA_STRESS_BELONG_PARTITION")
+	runnerGoKafka.StressBelongPartition = os.Getenv("RG_KAFKA_STRESS_BELONG_PARTITION")
 
-	topic := os.Getenv("RUNNER_GO_KAFKA_TOPIC")
+	topic := os.Getenv("RG_KAFKA_TOPIC")
 	if topic == "" {
 		topic = KafkaTopic
 	}
 	runnerGoKafka.Topic = topic
-	address := os.Getenv("RUNNER_GO_KAFKA_ADDRESS")
+	address := os.Getenv("RG_KAFKA_ADDRESS")
 	if address == "" {
 		address = KafkaAddress
 	}
@@ -168,5 +168,5 @@ func initKafka() {
 }
 
 func initHttp() {
-	Conf.Http.Host = os.Getenv("RUNNER_GO_COLLECTOR_HTTP_HOST")
+	Conf.Http.Host = os.Getenv("RG_COLLECTOR_HTTP_HOST")
 }
