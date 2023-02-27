@@ -1,11 +1,11 @@
 package main
 
 import (
-	"RunnerGo-collector/internal"
-	"RunnerGo-collector/internal/pkg/conf"
-	log2 "RunnerGo-collector/internal/pkg/log"
-	"RunnerGo-collector/internal/pkg/server"
 	"flag"
+	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal"
+	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/conf"
+	log2 "github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/log"
+	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/server"
 	"net/http"
 	"os"
 	"os/signal"
