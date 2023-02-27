@@ -1,10 +1,10 @@
 package internal
 
 import (
-	"RunnerGo-collector/internal/pkg"
-	"RunnerGo-collector/internal/pkg/conf"
-	"RunnerGo-collector/internal/pkg/dal/redis"
-	log "RunnerGo-collector/internal/pkg/log"
+	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg"
+	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/conf"
+	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/dal/redis"
+	log "github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/log"
 )
 
 func InitProjects(mode int, configFile string) {
