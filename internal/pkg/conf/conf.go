@@ -90,12 +90,12 @@ func EnvInitConfig() {
 
 const (
 	LogPath                    = "/data/logs/RunnerGo/RunnerGo-collector-info.log"
-	ManagementNotifyStopStress = "https://manager.runnergo.cc/management/api/v1/plan/notify_stop_stress"
-	RedisAddress               = "172.17.101.191:6398"
+	ManagementNotifyStopStress = "https://127.0.0.0:30000/management/api/v1/plan/notify_stop_stress"
+	RedisAddress               = "127.0.0.0:6379"
 	TotalKafkaPartition        = "TotalKafkaPartition"
 	StressBelongPartition      = "StressBelongPartition"
 	KafkaTopic                 = "runnergo"
-	KafkaAddress               = "127.0.0.1:9092"
+	KafkaAddress               = "127.0.0.0:9092"
 	KafkaKey                   = "kafka:report:partition"
 )
 
