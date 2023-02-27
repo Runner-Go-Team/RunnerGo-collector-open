@@ -94,7 +94,7 @@ const (
 )
 
 func initLog() {
-	path := os.Getenv("RG_COLLECTOR_LOGg_PATH")
+	path := os.Getenv("RG_COLLECTOR_LOG_PATH")
 	if path == "" {
 		path = LogPath
 	}
