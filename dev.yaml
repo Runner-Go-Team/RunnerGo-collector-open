@@ -2,7 +2,7 @@ http:
   host: "0.0.0.0:20125"
 
 kafka:
-  host: "172.17.101.188:9092"
+  host: ""
   topic: "runnergo"
   key: "kafka:report:partition"
   num: 10
@@ -10,7 +10,7 @@ kafka:
   stressBelongPartition: "StressBelongPartition"
 
 reportRedis:
-  address: "172.17.101.191:6398"
+  address: ""
   password: "apipost"
   db: 1
 
@@ -23,4 +23,4 @@ log:
   path: "/data/logs/RunnerGo/RunnerGo-collector-info.log"
 
 management:
-  address: "https://manager.runnergo.cc/management/api/v1/plan/notify_stop_stress"
+  address: ""
