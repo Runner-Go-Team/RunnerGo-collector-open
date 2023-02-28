@@ -122,6 +122,20 @@ func initRedis() {
 	}
 	runnerGoRedis.DB = db
 	Conf.Redis = runnerGoRedis
+
+	var runnerGoReportRedis ReportRedis
+	address = os.Getenv("RG_REDIS_ADDRESS")
+	if address == "" {
+		address = RedisAddress
+	}
+	runnerGoReportRedis.Address = address
+	runnerGoReportRedis.Password = os.Getenv("RG_REDIS_PASSWORD")
+	db, err = strconv.ParseInt(os.Getenv("RG_REDIS_DB"), 10, 64)
+	if err != nil {
+		db = 0
+	}
+	runnerGoReportRedis.DB = db
+	Conf.ReportRedis = runnerGoReportRedis
 }
 
 func initKafka() {
