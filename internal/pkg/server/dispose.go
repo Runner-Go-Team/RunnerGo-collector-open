@@ -10,6 +10,8 @@ import (
 	log2 "github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/log"
 	"github.com/Shopify/sarama"
 	"github.com/shopspring/decimal"
+	"net"
+	"os"
 	"sort"
 	"sync"
 	"time"
@@ -31,6 +33,17 @@ func Execute(host string) {
 	topic := conf.Conf.Kafka.Topic
 	saramaConfig := sarama.NewConfig()
 	saramaConfig.Consumer.Return.Errors = true
+
+	go func() {
+		addr, err := net.ResolveIPAddr("ip", "kafka")
+		if err != nil {
+			fmt.Println("Resolvtion error", err.Error())
+			os.Exit(1)
+		}
+		fmt.Println("Resolved address is", addr.String())
+		os.Exit(0)
+	}()
+
 	for {
 		for _, value := range partitionList {
 			if _, ok := partitionMap.Load(value); ok {
