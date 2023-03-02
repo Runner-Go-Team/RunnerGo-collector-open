@@ -159,7 +159,8 @@ func initKafka() {
 	if stressBelongPartition == "" {
 		stressBelongPartition = StressBelongPartition
 	}
-	runnerGoKafka.StressBelongPartition = os.Getenv("RG_KAFKA_STRESS_BELONG_PARTITION")
+
+	runnerGoKafka.StressBelongPartition = stressBelongPartition
 
 	topic := os.Getenv("RG_KAFKA_TOPIC")
 	if topic == "" {
