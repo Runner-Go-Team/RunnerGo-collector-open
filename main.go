@@ -10,7 +10,9 @@ import (
 	"os"
 	"os/signal"
 	"runtime"
+	"strconv"
 	"syscall"
+	"time"
 )
 
 var mode int
@@ -26,7 +28,15 @@ func main() {
 	internal.InitProjects(mode, configFile)
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
-
+	sleep := os.Getenv("RG_SLEEP_TIME")
+	if sleep == "" {
+		sleep = "60"
+	}
+	sleepTime, err := strconv.ParseInt(sleep, 10, 64)
+	if err != nil {
+		sleepTime = 60
+	}
+	time.Sleep(time.Duration(sleepTime) * time.Second)
 	collectorService := &http.Server{
 		Addr: conf.Conf.Http.Host,
 	}
