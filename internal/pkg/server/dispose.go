@@ -37,10 +37,11 @@ func Execute(host string) {
 			if _, ok := partitionMap.Load(value); ok {
 				continue
 			}
-			log2.Logger.Debug(fmt.Sprintf("host:%v    , %T", []string{host}, []string{host}))
+			_, err := sarama.NewSyncProducer([]string{host}, sarama.NewConfig())
+			log2.Logger.Debug("err:    ", nil)
 			consumer, consumerErr := sarama.NewConsumer([]string{host}, saramaConfig)
 			if consumerErr != nil {
-				log2.Logger.Error("topic  :"+topic+", 创建消费者失败:", consumerErr)
+				log2.Logger.Error("topic  :"+topic+", 创建消费者失败: ", consumerErr)
 				return
 			}
 			partitionMap.Store(value, true)
