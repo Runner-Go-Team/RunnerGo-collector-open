@@ -54,7 +54,6 @@ type Redis struct {
 func MustInitConf(mode int, configFile string) {
 	if mode != 0 {
 		EnvInitConfig()
-		fmt.Println("读取环境变量")
 		return
 	}
 
@@ -88,7 +87,7 @@ const (
 	RedisAddress               = "127.0.0.0:6379"
 	TotalKafkaPartition        = "TotalKafkaPartition"
 	StressBelongPartition      = "StressBelongPartition"
-	KafkaTopic                 = "runnergo"
+	KafkaTopic                 = "report"
 	KafkaAddress               = "127.0.0.0:9092"
 	KafkaKey                   = "kafka:report:partition"
 )
