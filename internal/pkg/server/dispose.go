@@ -31,13 +31,12 @@ func Execute(host string) {
 	topic := conf.Conf.Kafka.Topic
 	saramaConfig := sarama.NewConfig()
 	saramaConfig.Consumer.Return.Errors = true
-	log2.Logger.Debug("host:    ", host)
 	for {
 		for _, value := range partitionList {
 			if _, ok := partitionMap.Load(value); ok {
 				continue
 			}
-
+			log2.Logger.Debug(fmt.Sprintf("host:%v    , %T", []string{host}, []string{host}))
 			consumer, consumerErr := sarama.NewConsumer([]string{host}, saramaConfig)
 			if consumerErr != nil {
 				log2.Logger.Error("topic  :"+topic+", 创建消费者失败:", consumerErr)
