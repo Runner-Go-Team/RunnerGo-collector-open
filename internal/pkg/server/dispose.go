@@ -39,14 +39,14 @@ func Execute(host string) {
 			}
 			consumer, err := sarama.NewConsumer([]string{host}, sarama.NewConfig())
 			if err != nil {
-				log2.Logger.Error("topic  :"+topic+", 创建消费者失败: ", err)
+				log2.Logger.Error("topic  :"+topic+", 创建消费者失败: ", err, "   host:  ", host)
 				partitionMap.Delete(value)
 				continue
 			}
 			partitionMap.Store(value, true)
 			pc, err := consumer.ConsumePartition(topic, value, sarama.OffsetNewest)
 			if err != nil {
-				log2.Logger.Error("创建消费者失败：    ", err)
+				log2.Logger.Error(fmt.Sprintf("消费分区错误：分区%d, 错误：%s：    ", value, err.Error()))
 				partitionMap.Delete(value)
 				break
 			}
