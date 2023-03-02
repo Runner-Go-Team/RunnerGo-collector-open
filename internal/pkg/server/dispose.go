@@ -37,12 +37,11 @@ func Execute(host string) {
 			if _, ok := partitionMap.Load(value); ok {
 				continue
 			}
-			_, err := sarama.NewSyncProducer([]string{host}, sarama.NewConfig())
-			log2.Logger.Debug("err:    ", nil)
-			consumer, consumerErr := sarama.NewConsumer([]string{host}, sarama.NewConfig())
-			if consumerErr != nil {
-				log2.Logger.Error("topic  :"+topic+", 创建消费者失败: ", consumerErr)
-				return
+			consumer, err := sarama.NewConsumer([]string{host}, sarama.NewConfig())
+			if err != nil {
+				log2.Logger.Error("topic  :"+topic+", 创建消费者失败: ", err)
+				partitionMap.Delete(value)
+				continue
 			}
 			partitionMap.Store(value, true)
 			pc, err := consumer.ConsumePartition(topic, value, sarama.OffsetNewest)
