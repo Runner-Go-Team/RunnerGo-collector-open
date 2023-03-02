@@ -39,7 +39,7 @@ func Execute(host string) {
 			}
 			_, err := sarama.NewSyncProducer([]string{host}, sarama.NewConfig())
 			log2.Logger.Debug("err:    ", nil)
-			consumer, consumerErr := sarama.NewConsumer([]string{host}, saramaConfig)
+			consumer, consumerErr := sarama.NewConsumer([]string{host}, sarama.NewConfig())
 			if consumerErr != nil {
 				log2.Logger.Error("topic  :"+topic+", 创建消费者失败: ", consumerErr)
 				return
