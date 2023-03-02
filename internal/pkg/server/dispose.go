@@ -31,7 +31,7 @@ func Execute(host string) {
 	topic := conf.Conf.Kafka.Topic
 	saramaConfig := sarama.NewConfig()
 	saramaConfig.Consumer.Return.Errors = true
-
+	log2.Logger.Debug("host:    ", host)
 	for {
 		for _, value := range partitionList {
 			if _, ok := partitionMap.Load(value); ok {
