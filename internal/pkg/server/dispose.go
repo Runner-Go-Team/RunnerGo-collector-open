@@ -144,8 +144,10 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partiti
 					}
 					tpsTime := float64(sceneTestResultDataMsg.Results[eventId].EndTime-sceneTestResultDataMsg.Results[eventId].StartTime) / 1000
 					if tpsTime != 0 {
+
 						sceneTestResultDataMsg.Results[eventId].Tps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].Counter) / tpsTime).Round(2).Float64()
 						sceneTestResultDataMsg.Results[eventId].STps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].SuccessCounter) / tpsTime).Round(2).Float64()
+						log2.Logger.Debug("tps : ", sceneTestResultDataMsg.Results[eventId].Tps, "       counter:    ", sceneTestResultDataMsg.Results[eventId].Counter, "    ", sceneTestResultDataMsg.Results[eventId].SuccessCounter, "   tpstime:   ", tpsTime)
 					}
 					if sceneTestResultDataMsg.Results[eventId].Counter == sceneTestResultDataMsg.Results[eventId].Concurrency {
 						sceneTestResultDataMsg.Results[eventId].Counter = 0
@@ -240,7 +242,6 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partiti
 		sceneTestResultDataMsg.Results[resultDataMsg.EventId].TotalRequestTime += resultDataMsg.RequestTime
 		if resultDataMsg.IsSucceed {
 			sceneTestResultDataMsg.Results[resultDataMsg.EventId].SuccessNum += 1
-			sceneTestResultDataMsg.Results[resultDataMsg.EventId].SuccessCounter += 1
 		} else {
 			sceneTestResultDataMsg.Results[resultDataMsg.EventId].ErrorNum += 1
 		}
@@ -262,6 +263,9 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partiti
 		//
 		if sceneTestResultDataMsg.Results[resultDataMsg.EventId].Counter < sceneTestResultDataMsg.Results[resultDataMsg.EventId].Concurrency {
 			sceneTestResultDataMsg.Results[resultDataMsg.EventId].Counter++
+			if resultDataMsg.IsSucceed {
+				sceneTestResultDataMsg.Results[resultDataMsg.EventId].SuccessCounter++
+			}
 		}
 
 		//if sceneTestResultDataMsg.Results[resultDataMsg.EventId].Counter == sceneTestResultDataMsg.Results[resultDataMsg.EventId].Concurrency {
@@ -313,8 +317,10 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partiti
 					sceneTestResultDataMsg.Results[eventId].Tps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].Counter) / tpsTime).Round(2).Float64()
 					sceneTestResultDataMsg.Results[eventId].STps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].SuccessCounter) / tpsTime).Round(2).Float64()
 				}
+				log2.Logger.Debug("tps : ", sceneTestResultDataMsg.Results[eventId].Tps, "       counter:    ", sceneTestResultDataMsg.Results[eventId].Counter, "    ", sceneTestResultDataMsg.Results[eventId].SuccessCounter, "   tpstime:   ", tpsTime)
 
 				sceneTestResultDataMsg.TimeStamp = startTime / 1000
+
 				if sceneTestResultDataMsg.Results[eventId].Counter == sceneTestResultDataMsg.Results[eventId].Concurrency {
 					sceneTestResultDataMsg.Results[eventId].Counter = 0
 					sceneTestResultDataMsg.Results[eventId].SuccessCounter = 0
