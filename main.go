@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal"
+	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg"
 	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/conf"
 	log2 "github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/log"
 	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/server"
@@ -12,7 +13,6 @@ import (
 	"runtime"
 	"strconv"
 	"syscall"
-	"time"
 )
 
 var mode int
@@ -28,15 +28,19 @@ func main() {
 	internal.InitProjects(mode, configFile)
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	sleep := os.Getenv("RG_SLEEP_TIME")
-	if sleep == "" {
-		sleep = "60"
+
+	// 检查kafka是否启动
+	kafkaPort := os.Getenv("RG_KAFKA_PORT")
+	if kafkaPort == "" {
+		kafkaPort = "9092"
 	}
-	sleepTime, err := strconv.ParseInt(sleep, 10, 64)
+	port, err := strconv.Atoi(kafkaPort)
 	if err != nil {
-		sleepTime = 60
+		panic("kafka端口号不正确")
 	}
-	time.Sleep(time.Duration(sleepTime) * time.Second)
+	if pkg.PortScanning(port) <= 0 {
+		panic("kafka未启动")
+	}
 	collectorService := &http.Server{
 		Addr: conf.Conf.Http.Host,
 	}

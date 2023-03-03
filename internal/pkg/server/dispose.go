@@ -147,6 +147,12 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partiti
 						sceneTestResultDataMsg.Results[eventId].Tps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].Counter) / tpsTime).Round(2).Float64()
 						sceneTestResultDataMsg.Results[eventId].STps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].SuccessCounter) / tpsTime).Round(2).Float64()
 					}
+					if sceneTestResultDataMsg.Results[resultDataMsg.EventId].Counter == sceneTestResultDataMsg.Results[resultDataMsg.EventId].Concurrency {
+						sceneTestResultDataMsg.Results[resultDataMsg.EventId].Counter = 0
+						sceneTestResultDataMsg.Results[resultDataMsg.EventId].SuccessCounter = 0
+						sceneTestResultDataMsg.Results[resultDataMsg.EventId].StartTime = 0
+						sceneTestResultDataMsg.Results[resultDataMsg.EventId].EndTime = 0
+					}
 
 				}
 				sceneTestResultDataMsg.TimeStamp = resultDataMsg.Timestamp / 1000
@@ -309,17 +315,17 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partiti
 				}
 
 				sceneTestResultDataMsg.TimeStamp = startTime / 1000
+				if sceneTestResultDataMsg.Results[resultDataMsg.EventId].Counter == sceneTestResultDataMsg.Results[resultDataMsg.EventId].Concurrency {
+					sceneTestResultDataMsg.Results[resultDataMsg.EventId].Counter = 0
+					sceneTestResultDataMsg.Results[resultDataMsg.EventId].SuccessCounter = 0
+					sceneTestResultDataMsg.Results[resultDataMsg.EventId].StartTime = 0
+					sceneTestResultDataMsg.Results[resultDataMsg.EventId].EndTime = 0
+				}
 			}
 			if err = redis.InsertTestData(machineMap, sceneTestResultDataMsg, runTime); err != nil {
 				log2.Logger.Error("测试数据写入redis失败：     ", err)
 				continue
 			}
-		}
-		if sceneTestResultDataMsg.Results[resultDataMsg.EventId].Counter == sceneTestResultDataMsg.Results[resultDataMsg.EventId].Concurrency {
-			sceneTestResultDataMsg.Results[resultDataMsg.EventId].Counter = 0
-			sceneTestResultDataMsg.Results[resultDataMsg.EventId].SuccessCounter = 0
-			sceneTestResultDataMsg.Results[resultDataMsg.EventId].StartTime = 0
-			sceneTestResultDataMsg.Results[resultDataMsg.EventId].EndTime = 0
 		}
 
 	}
