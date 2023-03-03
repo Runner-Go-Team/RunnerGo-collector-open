@@ -12,5 +12,5 @@ func TestPost(t *testing.T) {
 }
 
 func TestPortScanning(t *testing.T) {
-	fmt.Println("123:     ", PortScanning(11111111))
+	fmt.Println("123:     ", PortScanning("11111111"))
 }

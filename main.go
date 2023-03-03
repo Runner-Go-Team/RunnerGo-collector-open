@@ -11,7 +11,6 @@ import (
 	"os"
 	"os/signal"
 	"runtime"
-	"strconv"
 	"syscall"
 )
 
@@ -30,15 +29,11 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	// 检查kafka是否启动
-	kafkaPort := os.Getenv("RG_KAFKA_PORT")
-	if kafkaPort == "" {
-		kafkaPort = "9092"
+	kafkaAddress := os.Getenv("RG_KAFKA_ADDRESS=kafka:9092")
+	if kafkaAddress == "" {
+		kafkaAddress = "kafka:9092"
 	}
-	port, err := strconv.Atoi(kafkaPort)
-	if err != nil {
-		panic("kafka端口号不正确")
-	}
-	if pkg.PortScanning(port) <= 0 {
+	if pkg.PortScanning(kafkaAddress) <= 0 {
 		panic("kafka未启动")
 	}
 	collectorService := &http.Server{
