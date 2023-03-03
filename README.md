@@ -15,7 +15,7 @@
 | RG_KAFKA_TOPIC                                                     | 否    | 默认：runnergo                                                           |          kafka的topic |
 | RG_KAFKA_ADDRESS                                                   | 否    |                                                                       |              kafka地址 |
 | RG_KAFKA_KEY                                                       | 否    | 默认：kafka:report:partition                                             |                      |
-| RG_KAFKA_NUM                                                       | 否    | 默认10                                                                  |            kafka分区数量 |
+| RG_KAFKA_NUM                                                       | 否    | 默认2                                                                   |            kafka分区数量 |
 | RG_KAFKA_TOTAL_PARTITION                                           |      | 默认：TotalKafkaPartition                                                |                      |
 | RG_KAFKA_STRESS_BELONG_PARTITION                                   |      | 默认：StressBelongPartition                                              |                      |
 | http设置                                                             ||||
