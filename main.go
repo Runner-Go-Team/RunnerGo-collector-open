@@ -38,6 +38,7 @@ func main() {
 		time.Sleep(60 * time.Second)
 		// docker版本，删除上次启动是的
 		redis.ExitStressBelongPartition(conf.StressBelongPartition)
+		time.Sleep(5 * time.Second)
 	}
 
 	collectorService := &http.Server{
