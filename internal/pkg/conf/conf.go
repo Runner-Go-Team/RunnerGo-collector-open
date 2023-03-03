@@ -146,7 +146,7 @@ func initKafka() {
 	runnerGoKafka.Key = key
 	num, err := strconv.Atoi(os.Getenv("RG_KAFKA_NUM"))
 	if err != nil {
-		num = 10
+		num = 2
 	}
 	runnerGoKafka.Num = num
 	totalKafkaPartition := os.Getenv("RG_KAFKA_TOTAL_PARTITION")
