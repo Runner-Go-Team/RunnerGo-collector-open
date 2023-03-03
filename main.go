@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal"
-	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg"
 	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/conf"
+	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/dal/redis"
 	log2 "github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/log"
 	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/server"
 	"net/http"
@@ -12,6 +12,7 @@ import (
 	"os/signal"
 	"runtime"
 	"syscall"
+	"time"
 )
 
 var mode int
@@ -33,11 +34,15 @@ func main() {
 	if kafkaAddress == "" {
 		kafkaAddress = "kafka:9092"
 	}
-	pkg.PortScanning(kafkaAddress)
+	time.Sleep(100 * time.Second)
 
 	collectorService := &http.Server{
 		Addr: conf.Conf.Http.Host,
 	}
+
+	// docker版本，删除上次启动是的
+	redis.ExitStressBelongPartition(conf.StressBelongPartition)
+
 	go server.Execute(conf.Conf.Kafka.Host)
 
 	go func() {

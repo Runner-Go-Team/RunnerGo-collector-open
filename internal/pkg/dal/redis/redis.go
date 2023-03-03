@@ -93,6 +93,9 @@ type A struct {
 	B int `json:"a"`
 }
 
+func ExitStressBelongPartition(stressBelongPartition string) {
+	RDB.HDel(stressBelongPartition, "*").Result()
+}
 func QueryStressBelongPartition(localIp string) (partitionList []int32) {
 	res, err := RDB.HGet(conf.Conf.Kafka.StressBelongPartition, localIp).Result()
 	if err != nil {
