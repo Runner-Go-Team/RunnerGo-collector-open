@@ -1,7 +1,6 @@
 package pkg
 
 import (
-	"bytes"
 	"context"
 	"crypto/tls"
 	"crypto/x509"
@@ -16,8 +15,6 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
-	"os/exec"
-	"regexp"
 	"strconv"
 	"strings"
 )
@@ -147,14 +144,13 @@ func SendStopStressReport(machineMap map[string]map[string]int64, teamId, planId
 }
 
 // PortScanning 端口扫描
-func PortScanning(port int) (res int) {
-	var outBytes bytes.Buffer
-	cmdStr := fmt.Sprintf("netstat -ano -p tcp | findstr %d", port)
-	cmd := exec.Command("cmd", "/c", cmdStr)
-	cmd.Stdout = &outBytes
-	cmd.Run()
-	resStr := outBytes.String()
-	r := regexp.MustCompile(`\s\d+\s`).FindAllString(resStr, -1)
-	res = len(r)
+func PortScanning(address string) (res int) {
+	conn, err := net.Dial("tcp", address)
+	defer conn.Close()
+	if err != nil {
+		res = -1
+	} else {
+		res = 1
+	}
 	return res
 }
