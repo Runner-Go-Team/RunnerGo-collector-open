@@ -147,9 +147,8 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partiti
 
 						sceneTestResultDataMsg.Results[eventId].Tps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].Counter) / tpsTime).Round(2).Float64()
 						sceneTestResultDataMsg.Results[eventId].STps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].SuccessCounter) / tpsTime).Round(2).Float64()
-						log2.Logger.Debug("tps : ", sceneTestResultDataMsg.Results[eventId].Tps, "       counter:    ", sceneTestResultDataMsg.Results[eventId].Counter, "    ", sceneTestResultDataMsg.Results[eventId].SuccessCounter, "   tpstime:   ", tpsTime)
 					}
-					if sceneTestResultDataMsg.Results[eventId].Counter == sceneTestResultDataMsg.Results[eventId].Concurrency {
+					if sceneTestResultDataMsg.Results[eventId].Counter >= sceneTestResultDataMsg.Results[eventId].Concurrency {
 						sceneTestResultDataMsg.Results[eventId].Counter = 0
 						sceneTestResultDataMsg.Results[eventId].SuccessCounter = 0
 						sceneTestResultDataMsg.Results[eventId].StartTime = 0
@@ -275,7 +274,7 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partiti
 		//}
 
 		requestTimeListMap[resultDataMsg.EventId] = append(requestTimeListMap[resultDataMsg.EventId], resultDataMsg.RequestTime)
-		if resultDataMsg.Timestamp-startTime >= 3000 {
+		if resultDataMsg.Timestamp-startTime >= 1500 {
 			startTime = resultDataMsg.Timestamp
 			if sceneTestResultDataMsg.ReportId == "" || sceneTestResultDataMsg.Results == nil {
 				break
@@ -317,11 +316,10 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partiti
 					sceneTestResultDataMsg.Results[eventId].Tps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].Counter) / tpsTime).Round(2).Float64()
 					sceneTestResultDataMsg.Results[eventId].STps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].SuccessCounter) / tpsTime).Round(2).Float64()
 				}
-				log2.Logger.Debug("tps : ", sceneTestResultDataMsg.Results[eventId].Tps, "       counter:    ", sceneTestResultDataMsg.Results[eventId].Counter, "    ", sceneTestResultDataMsg.Results[eventId].SuccessCounter, "   tpstime:   ", tpsTime)
 
 				sceneTestResultDataMsg.TimeStamp = startTime / 1000
 
-				if sceneTestResultDataMsg.Results[eventId].Counter == sceneTestResultDataMsg.Results[eventId].Concurrency {
+				if sceneTestResultDataMsg.Results[eventId].Counter >= sceneTestResultDataMsg.Results[eventId].Concurrency {
 					sceneTestResultDataMsg.Results[eventId].Counter = 0
 					sceneTestResultDataMsg.Results[eventId].SuccessCounter = 0
 					sceneTestResultDataMsg.Results[eventId].StartTime = 0
