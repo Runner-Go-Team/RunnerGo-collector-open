@@ -155,13 +155,6 @@ func PortScanning(port int) (res int) {
 	cmd.Run()
 	resStr := outBytes.String()
 	r := regexp.MustCompile(`\s\d+\s`).FindAllString(resStr, -1)
-	if len(r) > 0 {
-		pid, err := strconv.Atoi(strings.TrimSpace(r[0]))
-		if err != nil {
-			res = -1
-		} else {
-			res = pid
-		}
-	}
+	res = len(r)
 	return res
 }
