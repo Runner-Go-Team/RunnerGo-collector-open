@@ -17,6 +17,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var LocalIp = ""
@@ -144,13 +145,10 @@ func SendStopStressReport(machineMap map[string]map[string]int64, teamId, planId
 }
 
 // PortScanning 端口扫描
-func PortScanning(address string) (res int) {
-	conn, err := net.Dial("tcp", address)
+func PortScanning(address string) {
+	conn, err := net.DialTimeout("tcp", address, 5*time.Second)
 	defer conn.Close()
-	if err != nil {
-		res = -1
-	} else {
-		res = 1
+	if err != nil || conn == nil {
+		panic(fmt.Sprintf("端口未开启：", address))
 	}
-	return res
 }

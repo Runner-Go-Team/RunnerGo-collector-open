@@ -33,9 +33,8 @@ func main() {
 	if kafkaAddress == "" {
 		kafkaAddress = "kafka:9092"
 	}
-	if pkg.PortScanning(kafkaAddress) <= 0 {
-		panic("kafka未启动")
-	}
+	pkg.PortScanning(kafkaAddress)
+
 	collectorService := &http.Server{
 		Addr: conf.Conf.Http.Host,
 	}
