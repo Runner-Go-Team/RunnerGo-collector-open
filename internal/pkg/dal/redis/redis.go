@@ -94,7 +94,7 @@ type A struct {
 }
 
 func ExitStressBelongPartition(stressBelongPartition string) {
-	RDB.HDel(stressBelongPartition, "*").Result()
+	RDB.Del(stressBelongPartition).Result()
 }
 func QueryStressBelongPartition(localIp string) (partitionList []int32) {
 	res, err := RDB.HGet(conf.Conf.Kafka.StressBelongPartition, localIp).Result()

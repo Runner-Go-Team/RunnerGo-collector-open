@@ -5,7 +5,7 @@ kafka:
   host: ""
   topic: "runnergo"
   key: "kafka:report:partition"
-  num: 10
+  num: 2
   totalKafkaPartition: "TotalKafkaPartition"
   stressBelongPartition: "StressBelongPartition"
 
