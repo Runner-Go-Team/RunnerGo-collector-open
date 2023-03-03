@@ -27,7 +27,7 @@ type Http struct {
 }
 
 type Management struct {
-	Address string `yaml:"address"`
+	NotifyStopStress string `yaml:"notifyStopStress"`
 }
 
 type Kafka struct {
@@ -104,7 +104,7 @@ func initManagement() {
 	if address == "" {
 		address = ManagementNotifyStopStress
 	}
-	Conf.Management.Address = address
+	Conf.Management.NotifyStopStress = address
 }
 
 func initRedis() {
