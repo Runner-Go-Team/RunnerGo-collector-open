@@ -15,7 +15,7 @@ reportRedis:
   db: 1
 
 redis:
-  address: "172.17.101.191:6398"
+  address: ""
   password: "apipost"
   db: 1
 
@@ -23,4 +23,4 @@ log:
   path: "/data/logs/RunnerGo/RunnerGo-collector-info.log"
 
 management:
-  address: ""
+  notifyStopStress: ""

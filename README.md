@@ -1,8 +1,48 @@
 # RunnerGo-collector-open
+```text
+ collector服务为处理性能测试数据服务，没有该服务，测试报告将是无数据状态
+```
+## 本地部署
+# 下载，使用git命令下载到本地
+```gitignore
+ git clone https://github.com/Runner-Go-Team/RunnerGo-collector-open.git
+```
 
+# 修改配置文件， open.yaml
+```yaml
+http:
+  host: "0.0.0.0:20125"                             本服务地址
 
+kafka:
+  host: ""                                          kafka地址
+  topic: "runnergo"
+  key: "kafka:report:partition"                     kafka分区的key，存放在redis中。不需要修改
+  num: 2                                            kafka分区数量，如果想同时运行多个性能任务，需要设置该值，并将kafka分区数量调整到对应的值
+  totalKafkaPartition: "TotalKafkaPartition"        默认不需要修改
+  stressBelongPartition: "StressBelongPartition"    默认不需要修改
 
-## 开源部署
+reportRedis:
+  address: ""                                       redis地址
+  password: "apipost"
+  db: 1
+
+redis:
+  address: ""                                       可与reportRedis共用
+  password: "apipost"
+  db: 1
+
+log:
+  path: "/data/logs/RunnerGo/RunnerGo-collector-info.log"
+
+management:                                        management服务停止任务接口
+  notifyStopStress: "https://***/management/api/v1/plan/notify_stop_stress"
+```
+
+# 启动，
+```text
+等kafka启动并创建topic与分区成功后，进入根目录，执行   ./main.go
+```
+## 开源部署 docker版本
 1. 配置环境变量
 ## 配置说明
 | key                                                                | 是否必填 | 默认值                                                                   |                   说明 |
