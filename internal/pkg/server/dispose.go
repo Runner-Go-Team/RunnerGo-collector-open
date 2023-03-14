@@ -104,6 +104,15 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partiti
 		}
 
 		if resultDataMsg.Start {
+			if sceneTestResultDataMsg.PlanId == "" {
+				sceneTestResultDataMsg.PlanId = resultDataMsg.PlanId
+			}
+			if sceneTestResultDataMsg.ReportId == "" {
+				sceneTestResultDataMsg.ReportId = resultDataMsg.ReportId
+			}
+			if sceneTestResultDataMsg.PlanId == "" {
+				sceneTestResultDataMsg.PlanId = resultDataMsg.PlanId
+			}
 			continue
 		}
 
