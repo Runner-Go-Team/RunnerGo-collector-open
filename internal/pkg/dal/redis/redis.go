@@ -111,7 +111,7 @@ func ExitStressBelongPartition(stressBelongPartition, heartKey string) {
 		if val == nil {
 			continue
 		}
-		value := val.String()
+		value := val.Val()
 		if value == "" {
 			continue
 		}
