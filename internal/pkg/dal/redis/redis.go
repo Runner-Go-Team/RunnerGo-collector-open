@@ -98,10 +98,12 @@ func ExitStressBelongPartition(stressBelongPartition, heartKey string) {
 	if keys == nil {
 		return
 	}
+	log.Logger.Debug("keys:    ", keys)
 	fields, err := keys.Result()
 	if err != nil {
 		return
 	}
+	log.Logger.Debug("fields:    ", fields)
 	for _, field := range fields {
 		val := RDB.HGet(heartKey, field)
 		if val == nil {
@@ -111,11 +113,13 @@ func ExitStressBelongPartition(stressBelongPartition, heartKey string) {
 		if value == "" {
 			continue
 		}
+		log.Logger.Debug("value:    ", value)
 		currentTime := time.Now().Unix()
 		rTime, err := strconv.ParseInt(value, 10, 64)
 		if err != nil {
 			continue
 		}
+		log.Logger.Debug("time:    ", currentTime, "    ", rTime)
 		if currentTime-rTime > conf.Timeout {
 			hg := RDB.HGet(stressBelongPartition, field)
 			if hg == nil {
@@ -129,6 +133,7 @@ func ExitStressBelongPartition(stressBelongPartition, heartKey string) {
 				if k%2 == 0 {
 					continue
 				}
+				log.Logger.Debug("partition:     ", partition)
 				RDB.LPush(conf.Conf.Kafka.TotalKafkaPartition, string(partition))
 			}
 			RDB.HDel(stressBelongPartition, field)
