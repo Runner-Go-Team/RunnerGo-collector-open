@@ -29,28 +29,18 @@ func main() {
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	if mode != 0 {
-		// 检查kafka是否启动
-		kafkaAddress := os.Getenv("RG_KAFKA_ADDRESS=kafka:9092")
-		if kafkaAddress == "" {
-			kafkaAddress = "kafka:9092"
-		}
-		time.Sleep(30 * time.Second)
-		// docker版本，删除上次启动是的
-		redis.ExitStressBelongPartition(conf.StressBelongPartition)
-		time.Sleep(60 * time.Second)
-	}
+	// 发送心跳
+	go redis.SendHeartBeatRedis(conf.Collector, conf.Duration)
 
 	if mode != 0 {
 		// 检查kafka是否启动
-		kafkaAddress := os.Getenv("RG_KAFKA_ADDRESS=kafka:9092")
+		kafkaAddress := os.Getenv("RG_KAFKA_ADDRESS")
 		if kafkaAddress == "" {
 			kafkaAddress = "kafka:9092"
 		}
-		// docker版本，删除上次启动的ip
-		time.Sleep(30 * time.Second)
-		redis.ExitStressBelongPartition(conf.StressBelongPartition)
 		time.Sleep(60 * time.Second)
+		// docker版本，删除上次启动是的
+		redis.ExitStressBelongPartition(conf.StressBelongPartition, conf.Collector)
 	}
 
 	collectorService := &http.Server{

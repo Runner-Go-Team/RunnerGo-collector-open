@@ -90,6 +90,9 @@ const (
 	KafkaTopic                 = "report"
 	KafkaAddress               = "127.0.0.0:9092"
 	KafkaKey                   = "kafka:report:partition"
+	Collector                  = "collector"
+	Duration                   = 3
+	Timeout                    = 5
 )
 
 func initLog() {

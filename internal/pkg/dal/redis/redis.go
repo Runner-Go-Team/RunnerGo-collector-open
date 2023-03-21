@@ -93,8 +93,47 @@ type A struct {
 	B int `json:"a"`
 }
 
-func ExitStressBelongPartition(stressBelongPartition string) {
-	RDB.Del(stressBelongPartition).Result()
+func ExitStressBelongPartition(stressBelongPartition, heartKey string) {
+	keys := RDB.HKeys(stressBelongPartition)
+	if keys == nil {
+		return
+	}
+	fields, err := keys.Result()
+	if err != nil {
+		return
+	}
+	for _, field := range fields {
+		val := RDB.HGet(heartKey, field)
+		if val == nil {
+			continue
+		}
+		value := val.String()
+		if value == "" {
+			continue
+		}
+		currentTime := time.Now().Unix()
+		rTime, err := strconv.ParseInt(value, 10, 64)
+		if err != nil {
+			continue
+		}
+		if currentTime-rTime > conf.Timeout {
+			hg := RDB.HGet(stressBelongPartition, field)
+			if hg == nil {
+				continue
+			}
+			bytes, err := hg.Bytes()
+			if err != nil {
+				continue
+			}
+			for k, partition := range bytes {
+				if k%2 == 0 {
+					continue
+				}
+				RDB.LPush(conf.Conf.Kafka.TotalKafkaPartition, string(partition))
+			}
+			RDB.HDel(stressBelongPartition, field)
+		}
+	}
 }
 func QueryStressBelongPartition(localIp string) (partitionList []int32) {
 	res, err := RDB.HGet(conf.Conf.Kafka.StressBelongPartition, localIp).Result()
@@ -140,4 +179,23 @@ func InsertStressBelongPartition(key, value string) {
 		return
 	}
 
+}
+
+func InsertHeartbeat(key string, value int64) {
+	hs := RDB.HSet(key, pkg.LocalIp, value)
+	if hs == nil {
+		log.Logger.Error(fmt.Sprintf("机器ip:%s, 心跳发送失败, 写入redis失败, hash写入为： %s", pkg.LocalIp, hs))
+	}
+	err := hs.Err()
+	if err != nil {
+		log.Logger.Error(fmt.Sprintf("机器ip:%s, 心跳发送失败, 写入redis失败:   %s", pkg.LocalIp, err.Error()))
+		return
+	}
+}
+func SendHeartBeatRedis(key string, duration int64) {
+	for {
+		currentTime := time.Now().Unix()
+		InsertHeartbeat(key, currentTime)
+		time.Sleep(time.Duration(duration) * time.Second)
+	}
 }
