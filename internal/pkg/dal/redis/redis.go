@@ -95,7 +95,9 @@ type A struct {
 
 func ExitStressBelongPartition(stressBelongPartition, heartKey string) {
 	keys := RDB.HKeys(stressBelongPartition)
+
 	if keys == nil {
+		log.Logger.Debug("keys为空")
 		return
 	}
 	log.Logger.Debug("keys:    ", keys)
