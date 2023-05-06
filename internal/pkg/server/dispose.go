@@ -145,7 +145,6 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partiti
 						sceneTestResultDataMsg.Results[eventId].CustomRequestTimeLineValue = kao.TimeLineCalculate(sceneTestResultDataMsg.Results[eventId].CustomRequestTimeLine, requestTimeList)
 					}
 					rpsTime := float64(sceneTestResultDataMsg.Results[eventId].EndTime-sceneTestResultDataMsg.Results[eventId].StartTime) * 1000
-					log2.Logger.Debug(fmt.Sprintf("qingqiushu:   %d,  请求时间：   %f", sceneTestResultDataMsg.Results[eventId].TotalRequestNum, rpsTime))
 					if rpsTime != 0 {
 						sceneTestResultDataMsg.Results[eventId].Rps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].TotalRequestNum) / rpsTime).Round(2).Float64()
 						sceneTestResultDataMsg.Results[eventId].SRps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].SuccessNum) / rpsTime).Round(2).Float64()
@@ -312,7 +311,9 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partiti
 				if sceneTestResultDataMsg.Results[eventId].CustomRequestTimeLine != 0 {
 					sceneTestResultDataMsg.Results[eventId].CustomRequestTimeLineValue = kao.TimeLineCalculate(sceneTestResultDataMsg.Results[eventId].CustomRequestTimeLine, requestTimeList)
 				}
+
 				rpsTime := float64(sceneTestResultDataMsg.Results[eventId].EndTime-sceneTestResultDataMsg.Results[eventId].StartTime) * 1000
+				log2.Logger.Debug(fmt.Sprintf("qingqiushu:   %d,  开始时间：%d，  结束时间：%d  请求时间：   %f", sceneTestResultDataMsg.Results[eventId].TotalRequestNum, sceneTestResultDataMsg.Results[eventId].StartTime, sceneTestResultDataMsg.Results[eventId].EndTime, rpsTime))
 				if rpsTime != 0 {
 					sceneTestResultDataMsg.Results[eventId].Rps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].TotalRequestNum) / rpsTime).Round(2).Float64()
 					sceneTestResultDataMsg.Results[eventId].SRps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].SuccessNum) / rpsTime).Round(2).Float64()
