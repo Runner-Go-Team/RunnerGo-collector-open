@@ -1,11 +1,6 @@
 http:
   host: "0.0.0.0:20125"
 
-
-mongodb:
-  dsn: "mongodb://runnergo_open:czYNsm6LmfZ0XU3E@172.17.18.255:27017/runnergo_open"
-  database: "runnergo_open"
-
 kafka:
   host: "172.17.101.188:9092"
   topic: "runnergo"
@@ -14,16 +9,15 @@ kafka:
   totalKafkaPartition: "TotalKafkaPartition"
   stressBelongPartition: "StressBelongPartition"
 
-
 reportRedis:
   address: "172.17.101.191:6398"
   password: "apipost"
-  db: 0
+  db: 15
 
 redis:
   address: "172.17.101.191:6398"
   password: "apipost"
-  db: 0
+  db: 15
 
 log:
   path: "/data/logs/RunnerGo/RunnerGo-collector-info.log"
