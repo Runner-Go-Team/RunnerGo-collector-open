@@ -12,12 +12,12 @@ kafka:
 reportRedis:
   address: "172.17.101.191:6398"
   password: "apipost"
-  db: 1
+  db: 15
 
 redis:
   address: "172.17.101.191:6398"
   password: "apipost"
-  db: 1
+  db: 15
 
 log:
   path: "/data/logs/RunnerGo/RunnerGo-collector-info.log"
