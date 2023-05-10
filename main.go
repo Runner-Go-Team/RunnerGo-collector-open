@@ -33,7 +33,7 @@ func main() {
 	// 性能分析
 	pyroscope.Start(
 		pyroscope.Config{
-			ApplicationName: "RunnerGo-engine-open",
+			ApplicationName: "RunnerGo-collector-open",
 			ServerAddress:   "http://192.168.1.205:4040/",
 			//Logger:          pyroscope.StandardLogger,
 			ProfileTypes: []pyroscope.ProfileType{
