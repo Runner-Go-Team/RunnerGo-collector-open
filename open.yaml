@@ -11,12 +11,12 @@ kafka:
 
 reportRedis:
   address: "****:6398"
-  password: "apipost"
+  password: "***"
   db: 1
 
 redis:
   address: "****:6398"
-  password: "apipost"
+  password: "****"
   db: 1
 
 log:
