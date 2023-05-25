@@ -7,7 +7,6 @@ import (
 	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/dal/redis"
 	log2 "github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/log"
 	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/server"
-	"github.com/pyroscope-io/client/pyroscope"
 	"net/http"
 	"os"
 	"os/signal"
@@ -31,19 +30,19 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	// 性能分析
-	pyroscope.Start(
-		pyroscope.Config{
-			ApplicationName: "RunnerGo-collector-open",
-			ServerAddress:   "http://192.168.1.205:4040/",
-			//Logger:          pyroscope.StandardLogger,
-			ProfileTypes: []pyroscope.ProfileType{
-				pyroscope.ProfileCPU,
-				pyroscope.ProfileAllocObjects,
-				pyroscope.ProfileAllocSpace,
-				pyroscope.ProfileInuseObjects,
-				pyroscope.ProfileInuseSpace,
-			},
-		})
+	//pyroscope.Start(
+	//	pyroscope.Config{
+	//		ApplicationName: "RunnerGo-collector-open",
+	//		ServerAddress:   "http://192.168.1.205:4040/",
+	//		//Logger:          pyroscope.StandardLogger,
+	//		ProfileTypes: []pyroscope.ProfileType{
+	//			pyroscope.ProfileCPU,
+	//			pyroscope.ProfileAllocObjects,
+	//			pyroscope.ProfileAllocSpace,
+	//			pyroscope.ProfileInuseObjects,
+	//			pyroscope.ProfileInuseSpace,
+	//		},
+	//	})
 	// 发送心跳
 	go redis.SendHeartBeatRedis(conf.Collector, conf.Duration)
 

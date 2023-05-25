@@ -72,6 +72,10 @@ type ApiTestResultDataMsg struct {
 	EndTime                        int64   `json:"end_time"`
 	Counter                        int64   `json:"counter"` // 计数器
 	SuccessCounter                 int64   `json:"success_counter"`
+	StageTotalRequestNum           int64   `json:"stage_total_request_num"` // 某段时间内的，总请求数
+	StageSuccessNum                int64   `json:"stage_success_num"`
+	StageStartTime                 int64   `json:"stage_start_time"` // 某段时间内，开始时间
+	StageEndTime                   int64   `json:"stage_end_time"`
 	Rps                            float64 `json:"rps"`
 	SRps                           float64 `json:"srps"`
 	Tps                            float64 `json:"tps"`
