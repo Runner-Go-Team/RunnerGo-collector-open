@@ -125,12 +125,16 @@ func SendStopStressReport(machineMap map[string]map[string]int64, teamId, planId
 		log2.Logger.Error(reportId, "   ,json转换失败：  ", err.Error())
 	}
 	res, err := http.Post(conf.Conf.Management.NotifyStopStress, "application/json", strings.NewReader(string(body)))
-	defer res.Body.Close()
+
 	if err != nil {
 		log2.Logger.Error("http请求建立链接失败：", err.Error())
 		return
 	}
-
+	defer func() {
+		if res != nil {
+			res.Body.Close()
+		}
+	}()
 	responseBody, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log2.Logger.Error("http读取响应信息失败：", err.Error())
