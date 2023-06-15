@@ -15,6 +15,7 @@ import (
 )
 
 func Execute(host string) {
+	defer pkg.CapRecover()
 	var partitionMap = new(sync.Map)
 	partitionList := redis.QueryStressBelongPartition(pkg.LocalIp)
 	partitionList = redis.QueryTotalKafkaPartition(partitionList)
@@ -58,6 +59,7 @@ func Execute(host string) {
 }
 
 func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partition int32) {
+	defer pkg.CapRecover()
 	defer pc.AsyncClose()
 	defer partitionMap.Delete(partition)
 

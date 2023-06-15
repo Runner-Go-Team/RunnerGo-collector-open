@@ -108,6 +108,12 @@ type StopMsg struct {
 	Machines     []string `json:"machines"`
 }
 
+// CapRecover 捕获recover
+func CapRecover() {
+	if err := recover(); err != nil {
+		log2.Logger.Error("发生崩溃： ", err)
+	}
+}
 func SendStopStressReport(machineMap map[string]map[string]int64, teamId, planId, reportId string, duration int64) {
 
 	sm := StopMsg{
