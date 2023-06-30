@@ -59,7 +59,7 @@ func Execute(host string) {
 }
 
 func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partition int32) {
-	//defer pkg.CapRecover()
+	defer pkg.CapRecover()
 	defer pc.AsyncClose()
 	defer partitionMap.Delete(partition)
 
@@ -159,7 +159,7 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partiti
 					//	sceneTestResultDataMsg.Results[eventId].SRps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].SuccessNum) * rpsTime).Round(2).Float64()
 					//}
 					rpsTime := float64(sceneTestResultDataMsg.Results[eventId].StageEndTime-sceneTestResultDataMsg.Results[eventId].StageStartTime) / 1000
-					if tpsTime != 0 {
+					if rpsTime != 0 {
 						sceneTestResultDataMsg.Results[eventId].Rps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].StageTotalRequestNum) / rpsTime).Round(2).Float64()
 						sceneTestResultDataMsg.Results[eventId].SRps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].StageSuccessNum) / rpsTime).Round(2).Float64()
 					}
@@ -325,7 +325,7 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partiti
 				//}
 
 				rpsTime := float64(sceneTestResultDataMsg.Results[eventId].StageEndTime-sceneTestResultDataMsg.Results[eventId].StageStartTime) / 1000
-				if tpsTime != 0 {
+				if rpsTime != 0 {
 					sceneTestResultDataMsg.Results[eventId].Rps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].StageTotalRequestNum) / rpsTime).Round(2).Float64()
 					sceneTestResultDataMsg.Results[eventId].SRps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].StageSuccessNum) / rpsTime).Round(2).Float64()
 				}
