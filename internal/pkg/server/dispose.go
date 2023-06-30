@@ -59,7 +59,7 @@ func Execute(host string) {
 }
 
 func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partition int32) {
-	defer pkg.CapRecover()
+	//defer pkg.CapRecover()
 	defer pc.AsyncClose()
 	defer partitionMap.Delete(partition)
 
