@@ -12,10 +12,10 @@ import (
 	"github.com/shopspring/decimal"
 	"sort"
 	"sync"
-	"time"
 )
 
 func Execute(host string) {
+	defer pkg.CapRecover()
 	var partitionMap = new(sync.Map)
 	partitionList := redis.QueryStressBelongPartition(pkg.LocalIp)
 	partitionList = redis.QueryTotalKafkaPartition(partitionList)
@@ -59,6 +59,7 @@ func Execute(host string) {
 }
 
 func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partition int32) {
+	defer pkg.CapRecover()
 	defer pc.AsyncClose()
 	defer partitionMap.Delete(partition)
 
@@ -146,34 +147,27 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partiti
 						sceneTestResultDataMsg.Results[eventId].CustomRequestTimeLineValue = kao.TimeLineCalculate(sceneTestResultDataMsg.Results[eventId].CustomRequestTimeLine, requestTimeList)
 					}
 
-					//rpsTime := float64(sceneTestResultDataMsg.Results[eventId].EndTime-sceneTestResultDataMsg.Results[eventId].StartTime) * 1000
-					//if rpsTime != 0 {
-					//	sceneTestResultDataMsg.Results[eventId].Rps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].TotalRequestNum) / rpsTime).Round(2).Float64()
-					//	sceneTestResultDataMsg.Results[eventId].SRps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].SuccessNum) / rpsTime).Round(2).Float64()
-					//}
-
 					tpsTime := float64(sceneTestResultDataMsg.Results[eventId].EndTime-sceneTestResultDataMsg.Results[eventId].StartTime) / 1000
 					if tpsTime != 0 {
 						sceneTestResultDataMsg.Results[eventId].Tps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].TotalRequestNum) / tpsTime).Round(2).Float64()
 						sceneTestResultDataMsg.Results[eventId].STps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].SuccessNum) / tpsTime).Round(2).Float64()
 					}
-					if sceneTestResultDataMsg.Results[eventId].TotalRequestTime != 0 {
-						concurrent := sceneTestResultDataMsg.Results[eventId].Concurrency
-						rpsTime := float64(time.Second) * float64(concurrent) / float64(sceneTestResultDataMsg.Results[eventId].TotalRequestTime)
-						sceneTestResultDataMsg.Results[eventId].Rps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].TotalRequestNum) * rpsTime).Round(2).Float64()
-						sceneTestResultDataMsg.Results[eventId].SRps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].SuccessNum) * rpsTime).Round(2).Float64()
+					//if sceneTestResultDataMsg.Results[eventId].TotalRequestTime != 0 {
+					//	concurrent := sceneTestResultDataMsg.Results[eventId].Concurrency
+					//	rpsTime := float64(time.Second) * float64(concurrent) / float64(sceneTestResultDataMsg.Results[eventId].TotalRequestTime)
+					//	sceneTestResultDataMsg.Results[eventId].Rps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].TotalRequestNum) * rpsTime).Round(2).Float64()
+					//	sceneTestResultDataMsg.Results[eventId].SRps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].SuccessNum) * rpsTime).Round(2).Float64()
+					//}
+					rpsTime := float64(sceneTestResultDataMsg.Results[eventId].StageEndTime-sceneTestResultDataMsg.Results[eventId].StageStartTime) / 1000
+					if rpsTime != 0 {
+						sceneTestResultDataMsg.Results[eventId].Rps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].StageTotalRequestNum) / rpsTime).Round(2).Float64()
+						sceneTestResultDataMsg.Results[eventId].SRps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].StageSuccessNum) / rpsTime).Round(2).Float64()
 					}
-					//tpsTime := float64(sceneTestResultDataMsg.Results[eventId].EndTime-sceneTestResultDataMsg.Results[eventId].StartTime) / 1000
-					//if tpsTime != 0 {
-					//	sceneTestResultDataMsg.Results[eventId].Tps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].Counter) / tpsTime).Round(2).Float64()
-					//	sceneTestResultDataMsg.Results[eventId].STps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].SuccessCounter) / tpsTime).Round(2).Float64()
-					//}
-					//if sceneTestResultDataMsg.Results[eventId].Counter >= sceneTestResultDataMsg.Results[eventId].Concurrency {
-					//	sceneTestResultDataMsg.Results[eventId].Counter = 0
-					//	sceneTestResultDataMsg.Results[eventId].SuccessCounter = 0
-					//	sceneTestResultDataMsg.Results[eventId].StartTime = 0
-					//	sceneTestResultDataMsg.Results[eventId].EndTime = 0
-					//}
+
+					sceneTestResultDataMsg.Results[eventId].StageEndTime = 0
+					sceneTestResultDataMsg.Results[eventId].StageSuccessNum = 0
+					sceneTestResultDataMsg.Results[eventId].StageStartTime = 0
+					sceneTestResultDataMsg.Results[eventId].StageTotalRequestNum = 0
 
 				}
 				sceneTestResultDataMsg.TimeStamp = resultDataMsg.Timestamp / 1000
@@ -259,8 +253,12 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partiti
 		sceneTestResultDataMsg.Results[resultDataMsg.EventId].SendBytes += resultDataMsg.SendBytes
 		sceneTestResultDataMsg.Results[resultDataMsg.EventId].TotalRequestNum += 1
 		sceneTestResultDataMsg.Results[resultDataMsg.EventId].TotalRequestTime += resultDataMsg.RequestTime
+
+		sceneTestResultDataMsg.Results[resultDataMsg.EventId].StageTotalRequestNum += 1
+
 		if resultDataMsg.IsSucceed {
 			sceneTestResultDataMsg.Results[resultDataMsg.EventId].SuccessNum += 1
+			sceneTestResultDataMsg.Results[resultDataMsg.EventId].StageSuccessNum += 1
 		} else {
 			sceneTestResultDataMsg.Results[resultDataMsg.EventId].ErrorNum += 1
 		}
@@ -273,15 +271,16 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partiti
 			sceneTestResultDataMsg.Results[resultDataMsg.EventId].EndTime = resultDataMsg.EndTime
 		}
 
-		if sceneTestResultDataMsg.Results[resultDataMsg.EventId].Counter < sceneTestResultDataMsg.Results[resultDataMsg.EventId].Concurrency {
-			sceneTestResultDataMsg.Results[resultDataMsg.EventId].Counter++
-			if resultDataMsg.IsSucceed {
-				sceneTestResultDataMsg.Results[resultDataMsg.EventId].SuccessCounter++
-			}
+		if sceneTestResultDataMsg.Results[resultDataMsg.EventId].StageStartTime == 0 || sceneTestResultDataMsg.Results[resultDataMsg.EventId].StageStartTime > resultDataMsg.StartTime {
+			sceneTestResultDataMsg.Results[resultDataMsg.EventId].StageStartTime = resultDataMsg.StartTime
+		}
+
+		if sceneTestResultDataMsg.Results[resultDataMsg.EventId].StageEndTime == 0 || sceneTestResultDataMsg.Results[resultDataMsg.EventId].EndTime > resultDataMsg.EndTime {
+			sceneTestResultDataMsg.Results[resultDataMsg.EventId].StageEndTime = resultDataMsg.EndTime
 		}
 
 		requestTimeListMap[resultDataMsg.EventId] = append(requestTimeListMap[resultDataMsg.EventId], resultDataMsg.RequestTime)
-		if resultDataMsg.Timestamp-startTime >= 1500 {
+		if resultDataMsg.Timestamp-startTime >= 2000 {
 			startTime = resultDataMsg.Timestamp
 			if sceneTestResultDataMsg.ReportId == "" || sceneTestResultDataMsg.Results == nil {
 				break
@@ -313,38 +312,31 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partiti
 					sceneTestResultDataMsg.Results[eventId].CustomRequestTimeLineValue = kao.TimeLineCalculate(sceneTestResultDataMsg.Results[eventId].CustomRequestTimeLine, requestTimeList)
 				}
 
-				//rpsTime := float64(sceneTestResultDataMsg.Results[eventId].EndTime-sceneTestResultDataMsg.Results[eventId].StartTime) * 1000
-				//if rpsTime != 0 {
-				//	sceneTestResultDataMsg.Results[eventId].Rps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].TotalRequestNum) / rpsTime).Round(2).Float64()
-				//	sceneTestResultDataMsg.Results[eventId].SRps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].SuccessNum) / rpsTime).Round(2).Float64()
-				//}
-
 				tpsTime := float64(sceneTestResultDataMsg.Results[eventId].EndTime-sceneTestResultDataMsg.Results[eventId].StartTime) / 1000
 				if tpsTime != 0 {
 					sceneTestResultDataMsg.Results[eventId].Tps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].TotalRequestNum) / tpsTime).Round(2).Float64()
 					sceneTestResultDataMsg.Results[eventId].STps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].SuccessNum) / tpsTime).Round(2).Float64()
 				}
-				if sceneTestResultDataMsg.Results[eventId].TotalRequestTime != 0 {
-					concurrent := sceneTestResultDataMsg.Results[eventId].Concurrency
-					rpsTime := float64(time.Second) * float64(concurrent) / float64(sceneTestResultDataMsg.Results[eventId].TotalRequestTime)
-					sceneTestResultDataMsg.Results[eventId].Rps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].TotalRequestNum) * rpsTime).Round(2).Float64()
-					sceneTestResultDataMsg.Results[eventId].SRps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].SuccessNum) * rpsTime).Round(2).Float64()
+				//if sceneTestResultDataMsg.Results[eventId].TotalRequestTime != 0 {
+				//	concurrent := sceneTestResultDataMsg.Results[eventId].Concurrency
+				//	rpsTime := float64(time.Second) * float64(concurrent) / float64(sceneTestResultDataMsg.Results[eventId].TotalRequestTime)
+				//	sceneTestResultDataMsg.Results[eventId].Rps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].TotalRequestNum) * rpsTime).Round(2).Float64()
+				//	sceneTestResultDataMsg.Results[eventId].SRps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].SuccessNum) * rpsTime).Round(2).Float64()
+				//}
+
+				rpsTime := float64(sceneTestResultDataMsg.Results[eventId].StageEndTime-sceneTestResultDataMsg.Results[eventId].StageStartTime) / 1000
+				if rpsTime != 0 {
+					sceneTestResultDataMsg.Results[eventId].Rps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].StageTotalRequestNum) / rpsTime).Round(2).Float64()
+					sceneTestResultDataMsg.Results[eventId].SRps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].StageSuccessNum) / rpsTime).Round(2).Float64()
 				}
 
-				//tpsTime := float64(sceneTestResultDataMsg.Results[eventId].EndTime-sceneTestResultDataMsg.Results[eventId].StartTime) / 1000
-				//if tpsTime != 0 {
-				//	sceneTestResultDataMsg.Results[eventId].Tps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].Counter) / tpsTime).Round(2).Float64()
-				//	sceneTestResultDataMsg.Results[eventId].STps, _ = decimal.NewFromFloat(float64(sceneTestResultDataMsg.Results[eventId].SuccessCounter) / tpsTime).Round(2).Float64()
-				//}
+				sceneTestResultDataMsg.Results[eventId].StageEndTime = 0
+				sceneTestResultDataMsg.Results[eventId].StageSuccessNum = 0
+				sceneTestResultDataMsg.Results[eventId].StageStartTime = 0
+				sceneTestResultDataMsg.Results[eventId].StageTotalRequestNum = 0
 
 				sceneTestResultDataMsg.TimeStamp = startTime / 1000
 
-				//if sceneTestResultDataMsg.Results[eventId].Counter >= sceneTestResultDataMsg.Results[eventId].Concurrency {
-				//	sceneTestResultDataMsg.Results[eventId].Counter = 0
-				//	sceneTestResultDataMsg.Results[eventId].SuccessCounter = 0
-				//	sceneTestResultDataMsg.Results[eventId].StartTime = 0
-				//	sceneTestResultDataMsg.Results[eventId].EndTime = 0
-				//}
 			}
 			if err = redis.InsertTestData(machineMap, sceneTestResultDataMsg, runTime); err != nil {
 				log2.Logger.Error("测试数据写入redis失败：     ", err)
