@@ -33,6 +33,9 @@ func Execute(host string) {
 	saramaConfig.Consumer.Return.Errors = true
 
 	for {
+		//// 睡眠一分钟，再循环执行
+		time.Sleep(60 * time.Second)
+
 		for _, value := range partitionList {
 			if _, ok := partitionMap.Load(value); ok {
 				continue
