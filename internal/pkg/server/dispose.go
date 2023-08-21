@@ -75,7 +75,7 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partitionMap *sync.Map, partiti
 	var eventMap = make(map[string]int64)
 	var machineMap = make(map[string]map[string]int64)
 	timeout := time.Now().UnixMilli()
-	timeoutTicker := time.NewTicker(time.Second)
+	timeoutTicker := time.NewTicker(time.Minute)
 	sendMsgTicker := time.NewTicker(2 * time.Second)
 
 	defer func() {
