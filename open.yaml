@@ -9,15 +9,15 @@ kafka:
   totalKafkaPartition: "TotalKafkaPartition"
   stressBelongPartition: "StressBelongPartition"
 
-reportRedis:
-  address: "****:6398"
-  password: "***"
-  db: 1
+#reportRedis:
+#  address: "****:6398"
+#  password: "***"
+#  db: 1
 
 redis:
-  address: "****:6398"
-  password: "****"
-  db: 1
+  # 集群地址 使用;分割 例如 127.0.0.1:7000;127.0.0.1:7001;127.0.0.1:7002;127.0.0.1:7003;127.0.0.1:7004;127.0.0.1:7005
+  clusterAddress : ""
+  password: ""
 
 log:
   path: "/data/logs/RunnerGo/RunnerGo-collector-info.log"

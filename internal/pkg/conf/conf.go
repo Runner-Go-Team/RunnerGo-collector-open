@@ -10,12 +10,12 @@ import (
 var Conf Config
 
 type Config struct {
-	Http        Http        `yaml:"http"`
-	Kafka       Kafka       `yaml:"kafka"`
-	ReportRedis ReportRedis `yaml:"reportRedis"`
-	Redis       Redis       `yaml:"redis"`
-	Management  Management  `yaml:"management"`
-	Log         Log         `yaml:"log"`
+	Http  Http  `yaml:"http"`
+	Kafka Kafka `yaml:"kafka"`
+	//ReportRedis ReportRedis `yaml:"reportRedis"`
+	Redis      Redis      `yaml:"redis"`
+	Management Management `yaml:"management"`
+	Log        Log        `yaml:"log"`
 }
 
 type Log struct {
@@ -39,16 +39,15 @@ type Kafka struct {
 	StressBelongPartition string `yaml:"stressBelongPartition"`
 }
 
-type ReportRedis struct {
-	Address  string `yaml:"address"`
-	Password string `yaml:"password"`
-	DB       int64  `yaml:"DB"`
-}
+//type ReportRedis struct {
+//	Address  string `yaml:"address"`
+//	Password string `yaml:"password"`
+//	DB       int64  `yaml:"DB"`
+//}
 
 type Redis struct {
-	Address  string `yaml:"address"`
-	Password string `yaml:"password"`
-	DB       int64  `yaml:"DB"`
+	ClusterAddress string `yaml:"clusterAddress"`
+	Password       string `yaml:"password"`
 }
 
 func MustInitConf(mode int, configFile string) {
@@ -116,28 +115,9 @@ func initRedis() {
 	if address == "" {
 		address = RedisAddress
 	}
-	runnerGoRedis.Address = address
+	runnerGoRedis.ClusterAddress = address
 	runnerGoRedis.Password = os.Getenv("RG_REDIS_PASSWORD")
-	db, err := strconv.ParseInt(os.Getenv("RG_REDIS_DB"), 10, 64)
-	if err != nil {
-		db = 0
-	}
-	runnerGoRedis.DB = db
 	Conf.Redis = runnerGoRedis
-
-	var runnerGoReportRedis ReportRedis
-	address = os.Getenv("RG_REDIS_ADDRESS")
-	if address == "" {
-		address = RedisAddress
-	}
-	runnerGoReportRedis.Address = address
-	runnerGoReportRedis.Password = os.Getenv("RG_REDIS_PASSWORD")
-	db, err = strconv.ParseInt(os.Getenv("RG_REDIS_DB"), 10, 64)
-	if err != nil {
-		db = 0
-	}
-	runnerGoReportRedis.DB = db
-	Conf.ReportRedis = runnerGoReportRedis
 }
 
 func initKafka() {
