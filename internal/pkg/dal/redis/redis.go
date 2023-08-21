@@ -9,36 +9,25 @@ import (
 	"github.com/Runner-Go-Team/RunnerGo-collector-open/internal/pkg/log"
 	"github.com/go-redis/redis"
 	"strconv"
+	"strings"
 	"time"
 )
 
 var (
-	ReportRdb    *redis.Client
-	RDB          *redis.Client
+	RDB          *redis.ClusterClient
 	timeDuration = 3 * time.Second
 )
 
 type RedisClient struct {
-	Client *redis.Client
+	Client *redis.ClusterClient
 }
 
-func InitRedisClient(reportAddr, reportPassword string, reportDb int64, addr, password string, db int64) (err error) {
-	ReportRdb = redis.NewClient(
-		&redis.Options{
-			Addr:     reportAddr,
-			Password: reportPassword,
-			DB:       int(reportDb),
-		})
-	_, err = ReportRdb.Ping().Result()
-	if err != nil {
-		return err
-	}
+func InitRedisClient(addr, password string) (err error) {
 
-	RDB = redis.NewClient(
-		&redis.Options{
-			Addr:     addr,
+	RDB = redis.NewClusterClient(
+		&redis.ClusterOptions{
+			Addrs:    strings.Split(addr, ";"),
 			Password: password,
-			DB:       int(db),
 		})
 	_, err = RDB.Ping().Result()
 	return err
@@ -74,7 +63,7 @@ func InsertTestData(machineMap map[string]map[string]int64, sceneTestResultDataM
 		//deleteStopKey(adjustKey)
 	}
 
-	err = ReportRdb.LPush(key, data).Err()
+	err = RDB.LPush(key, data).Err()
 	if err != nil {
 		return
 	}

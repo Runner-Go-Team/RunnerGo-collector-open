@@ -12,5 +12,5 @@ func InitProjects(mode int, configFile string) {
 	log.InitLogger()
 	pkg.InitLocalIp()
 	//es.InitEsClient(conf.Conf.ES.Host, conf.Conf.ES.Username, conf.Conf.ES.Password)
-	redis.InitRedisClient(conf.Conf.ReportRedis.Address, conf.Conf.ReportRedis.Password, conf.Conf.ReportRedis.DB, conf.Conf.Redis.Address, conf.Conf.Redis.Password, conf.Conf.Redis.DB)
+	redis.InitRedisClient(conf.Conf.Redis.ClusterAddress, conf.Conf.Redis.Password)
 }
