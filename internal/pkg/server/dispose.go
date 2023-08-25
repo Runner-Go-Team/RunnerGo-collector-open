@@ -64,6 +64,8 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partition int32) {
 	var machineNum, startTime, runTime, index = int64(0), int64(0), int64(0), 0
 	var eventMap = make(map[string]int64)
 	var machineMap = make(map[string]map[string]int64)
+
+	mu := &sync.Mutex{}
 	log2.Logger.Info("分区：", partition, "   ,开始消费消息")
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
@@ -79,6 +81,7 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partition int32) {
 				if sceneTestResultDataMsg.ReportId == "" || sceneTestResultDataMsg.Results == nil {
 					break
 				}
+				mu.Lock()
 				for eventId, requestTimeList := range requestTimeListMap {
 					sort.Sort(requestTimeList)
 					if sceneTestResultDataMsg.Results[eventId].TotalRequestNum != 0 {
@@ -125,6 +128,7 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partition int32) {
 					sceneTestResultDataMsg.TimeStamp = startTime / 1000
 
 				}
+				mu.Unlock()
 				if err := redis.InsertTestData(machineMap, sceneTestResultDataMsg, runTime); err != nil {
 					log2.Logger.Error("redis写入数据失败:", err)
 				}
