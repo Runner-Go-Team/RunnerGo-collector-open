@@ -147,6 +147,12 @@ func ReceiveMessage(pc sarama.PartitionConsumer, partition int32) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
+		defer func() {
+			if err := recover(); err != nil {
+				log2.Logger.Error("发生崩溃：", err)
+				sceneTestResultDataMsg.End = true
+			}
+		}()
 		for msg := range pc.Messages() {
 			err := json.Unmarshal(msg.Value, &resultDataMsg)
 			if err != nil {
