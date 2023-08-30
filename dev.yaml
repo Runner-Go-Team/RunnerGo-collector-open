@@ -5,9 +5,7 @@ kafka:
   host: "172.17.101.188:9092"
   topic: "runnergo"
   key: "kafka:report:partition"
-  num: 2
-  totalKafkaPartition: "TotalKafkaPartition"
-  stressBelongPartition: "StressBelongPartition"
+  runKafkaPartition: "RunKafkaPartition"
 
 reportRedis:
   address: "172.17.101.191:6398"

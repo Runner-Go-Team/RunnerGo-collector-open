@@ -1,7 +1,6 @@
 package redis
 
 import (
-	"fmt"
 	"github.com/go-redis/redis"
 	"testing"
 )
@@ -11,8 +10,17 @@ func TestInsert(t *testing.T) {
 		&redis.Options{
 			Addr:     "172.17.101.191:6398",
 			Password: "apipost",
-			DB:       0,
+			DB:       15,
 		})
+
+	pubSub := rdb.Subscribe("RunKafkaPartition")
+	partitionCh := pubSub.Channel()
+	for {
+		select {
+		case c := <-partitionCh:
+			println("收到key：    ", c.Payload)
+		}
+	}
 
 	//var a = &A{}
 	//for i := 0; i < 10; i++ {
@@ -29,19 +37,19 @@ func TestInsert(t *testing.T) {
 	//	fmt.Println("result:         ", val[i])
 	//}
 
-	hg := rdb.HGet("StressBelongPartition", "172.17.64.1")
-	if hg == nil {
-		return
-	}
-	result, err := hg.Bytes()
-	if err != nil {
-		return
-	}
-	for k, v := range result {
-		if k%2 == 0 {
-			continue
-		}
-		fmt.Println("k:    ", k, "    v:   ", string(v))
-	}
+	//hg := rdb.HGet("StressBelongPartition", "172.17.64.1")
+	//if hg == nil {
+	//	return
+	//}
+	//result, err := hg.Bytes()
+	//if err != nil {
+	//	return
+	//}
+	//for k, v := range result {
+	//	if k%2 == 0 {
+	//		continue
+	//	}
+	//	fmt.Println("k:    ", k, "    v:   ", string(v))
+	//}
 
 }
