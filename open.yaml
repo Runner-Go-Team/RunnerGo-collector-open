@@ -4,6 +4,7 @@ http:
 kafka:
   host: "172.17.101.188:9092"
   topic: "runnergo"
+  key: "kafka:report:partition"
   runKafkaPartition: "RunKafkaPartition"
 
 reportRedis:
