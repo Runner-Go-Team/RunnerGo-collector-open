@@ -5,9 +5,7 @@ kafka:
   host: "****:9092"
   topic: "****"
   key: "kafka:report:partition"
-  num: 2
-  totalKafkaPartition: "TotalKafkaPartition"
-  stressBelongPartition: "StressBelongPartition"
+  runKafkaPartition: "RunKafkaPartition"
 
 reportRedis:
   address: "****:6398"

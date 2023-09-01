@@ -31,12 +31,10 @@ type Management struct {
 }
 
 type Kafka struct {
-	Host                  string `yaml:"host"`
-	Topic                 string `yaml:"topic"`
-	Key                   string `yaml:"key"`
-	Num                   int    `yaml:"num"`
-	TotalKafkaPartition   string `yaml:"totalKafkaPartition"`
-	StressBelongPartition string `yaml:"stressBelongPartition"`
+	Key               string `yaml:"key"`
+	Host              string `yaml:"host"`
+	Topic             string `yaml:"topic"`
+	RunKafkaPartition string `json:"runKafkaPartition"`
 }
 
 type ReportRedis struct {
@@ -83,16 +81,14 @@ func EnvInitConfig() {
 
 const (
 	LogPath                    = "/data/logs/RunnerGo/RunnerGo-collector-info.log"
-	ManagementNotifyStopStress = "https://127.0.0.0:30000/management/api/v1/plan/notify_stop_stress"
-	RedisAddress               = "127.0.0.0:6379"
-	TotalKafkaPartition        = "TotalKafkaPartition"
-	StressBelongPartition      = "StressBelongPartition"
-	KafkaTopic                 = "report"
-	KafkaAddress               = "127.0.0.0:9092"
+	Duration                   = 3
 	KafkaKey                   = "kafka:report:partition"
 	Collector                  = "collector"
-	Duration                   = 3
-	Timeout                    = 5
+	KafkaTopic                 = "report"
+	KafkaAddress               = "127.0.0.0:9092"
+	RedisAddress               = "127.0.0.0:6379"
+	RunKafkaPartition          = "RunKafkaPartition"
+	ManagementNotifyStopStress = "https://127.0.0.0:30000/management/api/v1/plan/notify_stop_stress"
 )
 
 func initLog() {
@@ -147,22 +143,12 @@ func initKafka() {
 		key = KafkaKey
 	}
 	runnerGoKafka.Key = key
-	num, err := strconv.Atoi(os.Getenv("RG_KAFKA_NUM"))
-	if err != nil {
-		num = 2
-	}
-	runnerGoKafka.Num = num
-	totalKafkaPartition := os.Getenv("RG_KAFKA_TOTAL_PARTITION")
-	if totalKafkaPartition == "" {
-		totalKafkaPartition = TotalKafkaPartition
-	}
-	runnerGoKafka.TotalKafkaPartition = totalKafkaPartition
-	stressBelongPartition := os.Getenv("RG_KAFKA_STRESS_BELONG_PARTITION")
-	if stressBelongPartition == "" {
-		stressBelongPartition = StressBelongPartition
-	}
 
-	runnerGoKafka.StressBelongPartition = stressBelongPartition
+	runKafkaPartition := os.Getenv("RG_KAFKA_RUN_KAFKA_PARTITION")
+	if runKafkaPartition == "" {
+		runKafkaPartition = RunKafkaPartition
+	}
+	runnerGoKafka.RunKafkaPartition = runKafkaPartition
 
 	topic := os.Getenv("RG_KAFKA_TOPIC")
 	if topic == "" {

@@ -12,7 +12,6 @@ import (
 	"os/signal"
 	"runtime"
 	"syscall"
-	"time"
 )
 
 var mode int
@@ -52,9 +51,9 @@ func main() {
 		if kafkaAddress == "" {
 			kafkaAddress = "kafka:9092"
 		}
-		time.Sleep(60 * time.Second)
-		// docker版本，删除上次启动是的
-		redis.ExitStressBelongPartition(conf.StressBelongPartition, conf.Collector)
+		//time.Sleep(60 * time.Second)
+		//// docker版本，删除上次启动是的
+		//redis.ExitStressBelongPartition(conf.StressBelongPartition, conf.Collector)
 	}
 
 	collectorService := &http.Server{
